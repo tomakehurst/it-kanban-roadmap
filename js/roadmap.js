@@ -60,18 +60,18 @@ RoadMap.create = function(programme, startDateAsString, endDateAsString) {
 			p.line(leftMargin, bottomBound, rightBound, bottomBound);
 			
 			//Vertical lines
-			range(0, numMonths + 1).each(function(i) {
+			for (var i = 0; i <= numMonths + 1; i++) {
 				var x = leftMargin + (i * lineSpacing);
 				p.line(x, topMargin, x, bottomBound);
-			});
+			};
 			
 			//Month names
-			range(0, numMonths).each(function(i) {
+			for (i = 0; i < numMonths; i++) {
 				var x = leftMargin + 10 + (i * lineSpacing);
 				var start = roadMap.startDate.clone();
 				var month = start.add('months', i).format('MMM');
 				p.text(month, x, topMargin + 30);
-			});
+			};
 			
 			p.stroke(0);
 			
@@ -122,6 +122,8 @@ RoadMap.create = function(programme, startDateAsString, endDateAsString) {
 				_.each(workstream, function(initiative) {
 					
 					//Box
+					p.strokeWeight(2);
+					p.stroke(0);
 					p.fill(194, 212, 174);
 					var x = leftMargin + (roadMap.proportionOfRange(initiative.desired) * (totalProgrammeWidth));
 				    var y = programmeBoxTopMargin + 30 + (i * initiativeSpacing);
@@ -129,6 +131,7 @@ RoadMap.create = function(programme, startDateAsString, endDateAsString) {
 					
 					//Circle inside box
 					p.fill(255);
+					p.strokeWeight(1);
 					if (initiative.desired !== initiative.expected) {
 						p.ellipse(x + half(boxSize), y + half(boxSize), circleSize, circleSize);
 					}
@@ -141,10 +144,19 @@ RoadMap.create = function(programme, startDateAsString, endDateAsString) {
 					}
 					x = leftMargin + (roadMap.proportionOfRange(initiative.expected) * (totalProgrammeWidth));
 					p.ellipse(x + half(boxSize), y + half(boxSize), circleSize, circleSize);
+					
+					//Commitment/forecast/done label
 					p.fill(0);
-					p.text(circleLabel(initiative, '2012-07-01'), x, y - 10);
+					p.textFont(p.loadFont('arial'), 9);
+					p.text(circleLabel(initiative, '2012-07-01'), x + 7, y + 25);
+					
+					//Desired -> expected arrow
+					if (initiative.desired !== initiative.expected) {
+						p.stroke(87, 205, 135);
+					}
 					
 					i++;
+					
 				});
 			});
 		}
