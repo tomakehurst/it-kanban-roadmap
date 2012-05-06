@@ -8,7 +8,7 @@ RoadMap.create = function(options) {
 	var endDate = moment(options.endDate);
 	var programme = options.programme;
 	
-	function circleLabel(initiative, currentDate) {
+	function circleLabel(initiative) {
 		var expectedInPast = moment(initiative.expected).diff(moment(currentDate), 'days') >= 0;
 		if (expectedInPast) {
 			return "Done";
@@ -189,7 +189,7 @@ RoadMap.create = function(options) {
 					//Commitment/forecast/done label
 					p.fill(0);
 					p.textFont(p.loadFont('arial'), 9);
-					p.text(circleLabel(initiative, '2012-07-01'), estimateCircleX + 7, y + 25);
+					p.text(circleLabel(initiative), estimateCircleX + 7, y + 25);
 					
 					//Desired -> expected arrow
 					if (initiative.desired !== initiative.expected) {
