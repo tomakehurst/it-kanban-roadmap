@@ -4,10 +4,8 @@ RoadMap.create = function(options) {
 	
 	var currentDate = moment(options.currentDate);
 	var fundingHorizon = moment(options.fundingHorizon);
-	
 	var startDate = moment(options.startDate);
 	var endDate = moment(options.endDate);
-	
 	var programme = options.programme;
 	
 	function circleLabel(initiative, currentDate) {
@@ -41,6 +39,10 @@ RoadMap.create = function(options) {
 	
 	function drawFunctionFor(roadMap) {
 		return function(p) {
+			var BEFORE_NOW_REGION_COLOUR = p.color(216, 254, 228);
+			var NOW_TO_FUNDING_HORIZON_COLOUR = p.color(255, 208, 176);
+			var AFTER_FUNDING_HORIZON_COLOUR = p.color(246, 186, 196);
+			
 			var width = 1500;
 			var height = 1000;
 			var leftMargin = 200;
@@ -72,6 +74,21 @@ RoadMap.create = function(options) {
 			p.stroke(200);
 			p.line(leftMargin, topMargin, rightBound, topMargin);
 			p.line(leftMargin, bottomBound, rightBound, bottomBound);
+			
+			
+			
+			//Region colours
+			var currentDateLineX = leftMargin + (roadMap.proportionOfRange(currentDate) * (totalProgrammeWidth));
+			var fundingHorizonLineX = leftMargin + (roadMap.proportionOfRange(fundingHorizon) * (totalProgrammeWidth));
+			
+			p.fill(BEFORE_NOW_REGION_COLOUR);
+			p.rect(leftMargin, programmeBoxTopMargin, currentDateLineX - leftMargin, bottomBound - programmeBoxTopMargin);
+			p.fill(NOW_TO_FUNDING_HORIZON_COLOUR);
+			p.rect(currentDateLineX, programmeBoxTopMargin, fundingHorizonLineX - currentDateLineX, bottomBound - programmeBoxTopMargin);
+			p.fill(AFTER_FUNDING_HORIZON_COLOUR);
+			p.rect(fundingHorizonLineX, programmeBoxTopMargin, rightBound - fundingHorizonLineX, bottomBound - programmeBoxTopMargin);
+			p.fill(0);
+			
 			
 			//Vertical lines
 			for (var i = 0; i <= numMonths + 1; i++) {
@@ -126,10 +143,8 @@ RoadMap.create = function(options) {
 			p.rotate(p.radians(-90));
 			
 			//Current date and funding horizon lines
-			var currentDateLineX = leftMargin + (roadMap.proportionOfRange(currentDate) * (totalProgrammeWidth));
 			p.fill(0);
 			p.verticalBoxTerminatedLine(currentDateLineX, programmeBoxTopMargin - 70, bottomBound + 20, 'Current Date');
-			var fundingHorizonLineX = leftMargin + (roadMap.proportionOfRange(fundingHorizon) * (totalProgrammeWidth));
 			p.verticalBoxTerminatedLine(fundingHorizonLineX, programmeBoxTopMargin - 70, bottomBound + 20, 'Funding Horizon');
 			
 			//Initiative boxes and circles
