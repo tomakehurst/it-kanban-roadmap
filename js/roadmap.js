@@ -1,6 +1,14 @@
 var RoadMap = {};
 
-RoadMap.create = function(programme, startDateAsString, endDateAsString) {
+RoadMap.create = function(options) {
+	
+	var currentDate = moment(options.currentDate);
+	var fundingHorizon = moment(options.fundingHorizon);
+	
+	var startDate = moment(options.startDate);
+	var endDate = moment(options.endDate);
+	
+	var programme = options.programme;
 	
 	function circleLabel(initiative, currentDate) {
 		var expectedInPast = moment(initiative.expected).diff(moment(currentDate), 'days') >= 0;
@@ -18,10 +26,18 @@ RoadMap.create = function(programme, startDateAsString, endDateAsString) {
 	}
 	
 	Processing.prototype.horizontalArrow = function(startX, y, endX) {
-		
+		this.strokeWeight(3);
 		this.line(startX, y, endX, y);
 		this.triangle(endX, y, endX - 15, y - 5, endX - 15, y + 5);
-	} 
+	}
+	
+	Processing.prototype.verticalBoxTerminatedLine = function(x, startY, endY, label) {
+		this.strokeWeight(3);
+		this.line(x, startY, x, endY);
+		this.rect(x - 5, startY - 5, 10, 10);
+		this.rect(x - 5, endY - 5, 10, 10);
+		this.text(label, x + 10, startY + 5);
+	}
 	
 	function drawFunctionFor(roadMap) {
 		return function(p) {
@@ -109,11 +125,14 @@ RoadMap.create = function(programme, startDateAsString, endDateAsString) {
 			});
 			p.rotate(p.radians(-90));
 			
-			//Current date
+			//Current date and funding horizon lines
+			var currentDateLineX = leftMargin + (roadMap.proportionOfRange(currentDate) * (totalProgrammeWidth));
+			p.fill(0);
+			p.verticalBoxTerminatedLine(currentDateLineX, programmeBoxTopMargin - 70, bottomBound + 20, 'Current Date');
+			var fundingHorizonLineX = leftMargin + (roadMap.proportionOfRange(fundingHorizon) * (totalProgrammeWidth));
+			p.verticalBoxTerminatedLine(fundingHorizonLineX, programmeBoxTopMargin - 70, bottomBound + 20, 'Funding Horizon');
 			
-			//Funding horizon
-			
-			//Boxes and dots
+			//Initiative boxes and circles
 			var initiativeSpacing = totalProgrammeHeight / totalInitiatives;
 			var i = 0;
 			_.each(roadMap.workstreams, function(workstream, workstreamName) {
@@ -191,8 +210,8 @@ RoadMap.create = function(programme, startDateAsString, endDateAsString) {
 	}
 	
 	return {
-		startDate: moment(startDateAsString),
-		endDate: moment(endDateAsString),
+		startDate: moment(startDate),
+		endDate: moment(endDate),
 		
 		numberOfMonths: function() {
 			return this.endDate.diff(this.startDate, 'months');
@@ -214,7 +233,14 @@ RoadMap.create = function(programme, startDateAsString, endDateAsString) {
 	};
 };
 
-var thisRoadMap = RoadMap.create('Test Roadmap', '2012-01-01', '2012-12-31');
+var thisRoadMap = RoadMap.create({
+	programme: 'Test Roadmap',
+	currentDate: '2012-03-15',
+	fundingHorizon: '2012-09-01',
+	startDate: '2012-01-01',
+	endDate: '2012-12-31'
+});
+
 thisRoadMap.workstreams = {
 	"In browser": [{
 		name: "Basic grid",
