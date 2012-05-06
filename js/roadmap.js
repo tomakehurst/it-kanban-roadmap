@@ -18,7 +18,9 @@ RoadMap.create = function(programme, startDateAsString, endDateAsString) {
 	}
 	
 	Processing.prototype.horizontalArrow = function(startX, y, endX) {
+		
 		this.line(startX, y, endX, y);
+		this.triangle(endX, y, endX - 15, y - 5, endX - 15, y + 5);
 	} 
 	
 	function drawFunctionFor(roadMap) {
@@ -121,7 +123,7 @@ RoadMap.create = function(programme, startDateAsString, endDateAsString) {
 				    var y = programmeBoxTopMargin + 30 + (i * initiativeSpacing);
 					
 					//Label
-					p.textFont(p.loadFont('arial'), 15);
+					p.textFont(p.loadFont('arial'), 17);
 					p.fill(0);
 					p.text(initiative.name, x, y - 5);
 					
@@ -160,8 +162,10 @@ RoadMap.create = function(programme, startDateAsString, endDateAsString) {
 						p.strokeWeight(3);
 						if (initiative.commitment) {
 							p.stroke(43, 126, 93);
+							p.fill(43, 126, 93);
 						} else {
 							p.stroke(124, 66, 18);
+							p.fill(124, 66, 18);
 						}
 						
 						var arrowStartX;
