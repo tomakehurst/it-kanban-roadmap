@@ -39,9 +39,18 @@ RoadMap.create = function(options) {
 	
 	function drawFunctionFor(roadMap) {
 		return function(p) {
+			var BLACK = 0;
+			var WHITE = 255;
+			var GREY = 200;
+			var VERY_LIGHT_GREY = 250;
 			var BEFORE_NOW_REGION_COLOUR = p.color(216, 254, 228);
 			var NOW_TO_FUNDING_HORIZON_COLOUR = p.color(255, 208, 176);
 			var AFTER_FUNDING_HORIZON_COLOUR = p.color(246, 186, 196);
+			var COMMITMENT_CIRCLE_COLOUR = p.color(87, 205, 135);
+			var FORECAST_CIRCLE_COLOUR = p.color(255, 155, 88);
+			var COMMITMENT_ARROW_COLOUR = p.color(43, 126, 93);
+			var FORECAST_ARROW_COLOUR = p.color(124, 66, 18);
+			var BOX_FILL_COLOUR = p.color(194, 212, 174);
 			
 			var width = 1500;
 			var height = 1000;
@@ -63,19 +72,17 @@ RoadMap.create = function(options) {
 			
 			var workstreamsLineSpacing = (bottomBound - programmeBoxTopMargin) / _.size(roadMap.workstreams);
 			
-			var boxSize = 50;
+			var boxSize = 65;
 			var circleSize = boxSize * 0.8;
 			
-			p.background(250);
+			p.background(VERY_LIGHT_GREY);
 			p.size(width, height);
 			p.strokeWeight(2);
 			p.textFont(p.loadFont('arial'), 16);
-			p.fill(0);
-			p.stroke(200);
+			p.fill(BLACK);
+			p.stroke(GREY);
 			p.line(leftMargin, topMargin, rightBound, topMargin);
 			p.line(leftMargin, bottomBound, rightBound, bottomBound);
-			
-			
 			
 			//Region colours
 			var currentDateLineX = leftMargin + (roadMap.proportionOfRange(currentDate) * (totalProgrammeWidth));
@@ -87,7 +94,7 @@ RoadMap.create = function(options) {
 			p.rect(currentDateLineX, programmeBoxTopMargin, fundingHorizonLineX - currentDateLineX, bottomBound - programmeBoxTopMargin);
 			p.fill(AFTER_FUNDING_HORIZON_COLOUR);
 			p.rect(fundingHorizonLineX, programmeBoxTopMargin, rightBound - fundingHorizonLineX, bottomBound - programmeBoxTopMargin);
-			p.fill(0);
+			p.fill(BLACK);
 			
 			
 			//Vertical lines
@@ -104,7 +111,7 @@ RoadMap.create = function(options) {
 				p.text(month, x, topMargin + 30);
 			};
 			
-			p.stroke(0);
+			p.stroke(BLACK);
 			
 			//Calculate each workstream's share of total height
 			var totalInitiatives = _.reduce(roadMap.workstreams, function(memo, workstream, workstreamName) {
@@ -125,7 +132,7 @@ RoadMap.create = function(options) {
 			
 			//Programme box
 			p.strokeWeight(3);
-			p.stroke(0);
+			p.stroke(BLACK);
 			p.noFill();
 			p.rect(programmeBoxLeftMargin, programmeBoxTopMargin, rightBound - programmeBoxLeftMargin, bottomBound - programmeBoxTopMargin);
 			p.line(programmeBoxMidX, programmeBoxTopMargin, programmeBoxMidX, bottomBound);
@@ -143,7 +150,7 @@ RoadMap.create = function(options) {
 			p.rotate(p.radians(-90));
 			
 			//Current date and funding horizon lines
-			p.fill(0);
+			p.fill(BLACK);
 			p.verticalBoxTerminatedLine(currentDateLineX, programmeBoxTopMargin - 70, bottomBound + 20, 'Current Date');
 			p.verticalBoxTerminatedLine(fundingHorizonLineX, programmeBoxTopMargin - 70, bottomBound + 20, 'Funding Horizon');
 			
@@ -158,20 +165,19 @@ RoadMap.create = function(options) {
 					
 					//Label
 					p.textFont(p.loadFont('arial'), 17);
-					p.fill(0);
+					p.fill(BLACK);
 					p.text(initiative.name, x, y - 5);
 					
 					//Box
 					p.strokeWeight(2);
-					p.stroke(0);
-					p.fill(194, 212, 174);
-					
+					p.stroke(BLACK);
+					p.fill(BOX_FILL_COLOUR);
 					var boxX = x;
 					var boxY = y;
-					p.rect(boxX, boxY, 50, 50);
+					p.rect(boxX, boxY, boxSize, boxSize);
 					
 					//Circle inside box
-					p.fill(255);
+					p.fill(WHITE);
 					p.strokeWeight(1);
 					if (initiative.desired !== initiative.expected) {
 						p.ellipse(x + half(boxSize), y + half(boxSize), circleSize, circleSize);
@@ -179,27 +185,27 @@ RoadMap.create = function(options) {
 					
 					//Commitment or forecast circle
 					if (initiative.commitment) {
-						p.fill(87, 205, 135);
+						p.fill(COMMITMENT_CIRCLE_COLOUR);
 					} else {
-						p.fill(255, 155, 88);
+						p.fill(FORECAST_CIRCLE_COLOUR);
 					}
 					var estimateCircleX = leftMargin + (roadMap.proportionOfRange(initiative.expected) * (totalProgrammeWidth));
 					p.ellipse(estimateCircleX + half(boxSize), y + half(boxSize), circleSize, circleSize);
 					
 					//Commitment/forecast/done label
-					p.fill(0);
-					p.textFont(p.loadFont('arial'), 9);
-					p.text(circleLabel(initiative), estimateCircleX + 7, y + 25);
+					p.fill(BLACK);
+					p.textFont(p.loadFont('arial'), 11);
+					p.text(circleLabel(initiative), estimateCircleX + 10, y + (boxSize / 2));
 					
 					//Desired -> expected arrow
 					if (initiative.desired !== initiative.expected) {
 						p.strokeWeight(3);
 						if (initiative.commitment) {
-							p.stroke(43, 126, 93);
-							p.fill(43, 126, 93);
+							p.stroke(COMMITMENT_ARROW_COLOUR);
+							p.fill(COMMITMENT_ARROW_COLOUR);
 						} else {
-							p.stroke(124, 66, 18);
-							p.fill(124, 66, 18);
+							p.stroke(FORECAST_ARROW_COLOUR);
+							p.fill(FORECAST_ARROW_COLOUR);
 						}
 						
 						var arrowStartX;
