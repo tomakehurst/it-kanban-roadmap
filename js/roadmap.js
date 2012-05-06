@@ -9,7 +9,7 @@ RoadMap.create = function(options) {
 	var programme = options.programme;
 	
 	function circleLabel(initiative) {
-		var expectedInPast = moment(initiative.expected).diff(moment(currentDate), 'days') >= 0;
+		var expectedInPast = moment(initiative.expected).diff(moment(currentDate), 'days') <= 0;
 		if (expectedInPast) {
 			return "Done";
 		} else if (!expectedInPast && initiative.commitment) {
@@ -26,7 +26,7 @@ RoadMap.create = function(options) {
 	Processing.prototype.horizontalArrow = function(startX, y, endX) {
 		this.strokeWeight(3);
 		this.line(startX, y, endX, y);
-		this.triangle(endX, y, endX - 15, y - 5, endX - 15, y + 5);
+		this.triangle(endX + 2, y, endX - 15, y - 5, endX - 15, y + 5);
 	}
 	
 	Processing.prototype.verticalBoxTerminatedLine = function(x, startY, endY, label) {
@@ -194,8 +194,8 @@ RoadMap.create = function(options) {
 					
 					//Commitment/forecast/done label
 					p.fill(BLACK);
-					p.textFont(p.loadFont('arial'), 11);
-					p.text(circleLabel(initiative), estimateCircleX + 10, y + (boxSize / 2));
+					p.textFont(p.loadFont('arial'), 10);
+					p.text(circleLabel(initiative), estimateCircleX + 8, y + (boxSize / 2));
 					
 					//Desired -> expected arrow
 					if (initiative.desired !== initiative.expected) {
@@ -219,7 +219,7 @@ RoadMap.create = function(options) {
 							
 						}
 						
-						if (arrowEndX - arrowStartX > half(boxSize)) {
+						if (arrowEndX - arrowStartX > (boxSize / 4)) {
 							p.horizontalArrow(arrowStartX, boxY + half(boxSize), arrowEndX);
 						}
 					}
@@ -283,14 +283,14 @@ thisRoadMap.workstreams = {
 	}],
 	
 	"Server components": [{
-		name: "RESTful persistence API",
+		name: "Backend persistence",
 		desired: '2012-09-15',
 		expected: "2012-10-15",
 		commitment: true
 	}],
 	
 	"Screen paint": [{
-		name: "Nice colours",
+		name: "Refine colours",
 		desired: '2012-11-31',
 		expected: "2012-11-27",
 		commitment: true
