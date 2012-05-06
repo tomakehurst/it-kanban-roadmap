@@ -2,14 +2,6 @@ var RoadMap = {};
 
 RoadMap.create = function(programme, startDateAsString, endDateAsString) {
 	
-	function range(start, end) {
-		return _.extend(_.range(start, end), {
-			each: function(fn) {
-				_.each(this, fn);
-			}
-		});
-	}
-	
 	function circleLabel(initiative, currentDate) {
 		var expectedInPast = moment(initiative.expected).diff(moment(currentDate), 'days') >= 0;
 		if (expectedInPast) {
@@ -24,6 +16,10 @@ RoadMap.create = function(programme, startDateAsString, endDateAsString) {
 	function half(value) {
 		return value / 2;
 	}
+	
+	Processing.prototype.horizontalArrow = function(startX, y, endX) {
+		this.line(startX, y, endX, y);
+	} 
 	
 	function drawFunctionFor(roadMap) {
 		return function(p) {
@@ -121,13 +117,22 @@ RoadMap.create = function(programme, startDateAsString, endDateAsString) {
 			_.each(roadMap.workstreams, function(workstream, workstreamName) {
 				_.each(workstream, function(initiative) {
 					
+					var x = leftMargin + (roadMap.proportionOfRange(initiative.desired) * (totalProgrammeWidth));
+				    var y = programmeBoxTopMargin + 30 + (i * initiativeSpacing);
+					
+					//Label
+					p.textFont(p.loadFont('arial'), 15);
+					p.fill(0);
+					p.text(initiative.name, x, y - 5);
+					
 					//Box
 					p.strokeWeight(2);
 					p.stroke(0);
 					p.fill(194, 212, 174);
-					var x = leftMargin + (roadMap.proportionOfRange(initiative.desired) * (totalProgrammeWidth));
-				    var y = programmeBoxTopMargin + 30 + (i * initiativeSpacing);
-					p.rect(x, y, 50, 50);
+					
+					var boxX = x;
+					var boxY = y;
+					p.rect(boxX, boxY, 50, 50);
 					
 					//Circle inside box
 					p.fill(255);
@@ -142,21 +147,40 @@ RoadMap.create = function(programme, startDateAsString, endDateAsString) {
 					} else {
 						p.fill(255, 155, 88);
 					}
-					x = leftMargin + (roadMap.proportionOfRange(initiative.expected) * (totalProgrammeWidth));
-					p.ellipse(x + half(boxSize), y + half(boxSize), circleSize, circleSize);
+					var estimateCircleX = leftMargin + (roadMap.proportionOfRange(initiative.expected) * (totalProgrammeWidth));
+					p.ellipse(estimateCircleX + half(boxSize), y + half(boxSize), circleSize, circleSize);
 					
 					//Commitment/forecast/done label
 					p.fill(0);
 					p.textFont(p.loadFont('arial'), 9);
-					p.text(circleLabel(initiative, '2012-07-01'), x + 7, y + 25);
+					p.text(circleLabel(initiative, '2012-07-01'), estimateCircleX + 7, y + 25);
 					
 					//Desired -> expected arrow
 					if (initiative.desired !== initiative.expected) {
-						p.stroke(87, 205, 135);
+						p.strokeWeight(3);
+						if (initiative.commitment) {
+							p.stroke(43, 126, 93);
+						} else {
+							p.stroke(124, 66, 18);
+						}
+						
+						var arrowStartX;
+						var arrowEndX;
+						if (moment(initiative.expected).diff(moment(initiative.desired), 'days') > 1) {
+							arrowStartX = boxX + boxSize;
+							arrowEndX = estimateCircleX + 2;
+						} else {
+							arrowStartX = estimateCircleX + circleSize + 5;
+							arrowEndX = boxX - 1;
+							
+						}
+						
+						if (arrowEndX - arrowStartX > half(boxSize)) {
+							p.horizontalArrow(arrowStartX, boxY + half(boxSize), arrowEndX);
+						}
 					}
 					
 					i++;
-					
 				});
 			});
 		}
