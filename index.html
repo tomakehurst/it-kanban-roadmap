@@ -70,9 +70,15 @@
 					"commitment": true
 				},
 				{
-					"name": "Dots and boxes",
+					"name": "Circles and boxes",
 					"desired": "2012-07-29",
 					"expected": "2012-07-29",
+					"commitment": false
+				},
+                                {
+					"name": "Refactor",
+					"desired": "2012-08-29",
+					"expected": "2013-02-1",
 					"commitment": false
 				}
 			],
@@ -114,6 +120,24 @@
   <script src="js/plugins.js"></script>
   <script src="js/script.js"></script>
   <script src="js/roadmap.js"></script>
+  <script type="text/javascript">
+  	function updateRoadmap() {
+		var optionsJson = $('#options').val();
+		var initiativesJson = $('#initiatives').val();
+		var thisRoadMap = RoadMap.create(JSON.parse(optionsJson));
+		thisRoadMap.workstreams = JSON.parse(initiativesJson);
+		var canvas = document.getElementById("graphics");
+		thisRoadMap.drawIn(canvas);
+	}
+
+	$(function() {
+		$('#updateButton').click(function() {
+			updateRoadmap();
+		});
+		
+		updateRoadmap();
+	});
+  </script>
   <!-- end scripts -->
 </body>
 </html>

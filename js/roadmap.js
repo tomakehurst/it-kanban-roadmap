@@ -253,28 +253,3 @@ RoadMap.create = function(options) {
 		}
 	};
 };
-
-
-function updateRoadmap() {
-	var optionsJson = $('#options').val();
-	console.log("optionsJson: " + optionsJson);
-	var initiativesJson = $('#initiatives').val();
-	console.log("initiativesJson: " + initiativesJson);
-	var thisRoadMap = RoadMap.create(JSON.parse(optionsJson));
-	thisRoadMap.workstreams = JSON.parse(initiativesJson);
-	var canvas = document.getElementById("graphics");
-	thisRoadMap.drawIn(canvas);
-}
-
-$(function() {
-	$('#updateButton').click(function() {
-		updateRoadmap();
-	});
-	
-	updateRoadmap();
-});
-
-
-
-
-
