@@ -254,72 +254,27 @@ RoadMap.create = function(options) {
 	};
 };
 
-var thisRoadMap = RoadMap.create({
-	programme: 'Test Roadmap',
-	currentDate: '2012-03-15',
-	fundingHorizon: '2012-09-01',
-	startDate: '2012-01-01',
-	endDate: '2012-12-31'
+
+function updateRoadmap() {
+	var optionsJson = $('#options').val();
+	console.log("optionsJson: " + optionsJson);
+	var initiativesJson = $('#initiatives').val();
+	console.log("initiativesJson: " + initiativesJson);
+	var thisRoadMap = RoadMap.create(JSON.parse(optionsJson));
+	thisRoadMap.workstreams = JSON.parse(initiativesJson);
+	var canvas = document.getElementById("graphics");
+	thisRoadMap.drawIn(canvas);
+}
+
+$(function() {
+	$('#updateButton').click(function() {
+		updateRoadmap();
+	});
+	
+	updateRoadmap();
 });
 
-thisRoadMap.workstreams = {
-	"In browser": [{
-		name: "Basic grid",
-		desired: '2012-01-15',
-		expected: "2012-02-14",
-		commitment: false
-	},
-	{
-		name: "Programme and workstreams boxes",
-		desired: '2012-04-29',
-		expected: "2012-04-05",
-		commitment: true
-	},
-	{
-		name: "Dots and boxes",
-		desired: '2012-07-29',
-		expected: "2012-07-29",
-		commitment: false
-	}],
-	
-	"Server components": [{
-		name: "Backend persistence",
-		desired: '2012-09-15',
-		expected: "2012-10-15",
-		commitment: true
-	}],
-	
-	"Screen paint": [{
-		name: "Refine colours",
-		desired: '2012-11-31',
-		expected: "2012-11-27",
-		commitment: true
-	}]
-};
-
-
-var canvas = document.getElementById("graphics");
-thisRoadMap.drawIn(canvas);
 
 
 
-var grid;
-var columns = [
-  {id: "name", name: "Business Initiative", field: "name"},
-  {id: "expected", name: "Expected", field: "expected"},
-  {id: "commitment", name: "Commitment?", field: "commitment"}
-];
 
-var options = {
-  enableCellNavigation: true,
-  enableColumnReorder: false
-};
-
-$(function () {
-  var data = [{
-      name: "Do the things",
-      expected: "01/01/2012",
-      commitment: false
-    }];
-  grid = new Slick.Grid("#dataGrid", data, columns, options);
-})

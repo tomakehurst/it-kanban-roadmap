@@ -224,10 +224,11 @@ td { vertical-align: top; }
 	margin: 0px auto;
 }
 
-#dataGrid {
-	width: 1480px;
+#inputData {
+	width: 1500px;
 	height: 500px;
 	margin: 0px auto;
+	text-align: left;
 }
 
 

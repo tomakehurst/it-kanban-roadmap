@@ -40,7 +40,63 @@
   </header>
   <div role="main">
 	<canvas id="graphics" width="1000" height="700"></canvas>
-	<div id="dataGrid"></div>
+  </div>
+  <div id="inputData">
+  	<label for="options">Options:</label><br />
+	<textarea id="options" name="options" rows="10" cols="50">
+		{
+			"programme": "Test Roadmap",
+			"currentDate": "2012-03-15",
+			"fundingHorizon": "2012-09-01",
+			"startDate": "2012-01-01",
+			"endDate": "2012-12-31"
+		}
+	</textarea>
+	
+	<label for="initiatives">Initiatives:</label>
+	<textarea id="initiatives" name="initiatives" rows="50" cols="90">
+		{
+			"In browser": [
+				{
+					"name": "Basic grid",
+					"desired": "2012-01-15",
+					"expected": "2012-02-14",
+					"commitment": false
+				},
+				{
+					"name": "Programme and workstreams boxes",
+					"desired": "2012-04-29",
+					"expected": "2012-04-05",
+					"commitment": true
+				},
+				{
+					"name": "Dots and boxes",
+					"desired": "2012-07-29",
+					"expected": "2012-07-29",
+					"commitment": false
+				}
+			],
+			
+			"Server components": [
+				{
+					"name": "Backend persistence",
+					"desired": "2012-09-15",
+					"expected": "2012-10-15",
+					"commitment": true
+				}
+			],
+			
+			"Screen paint": [
+				{
+					"name": "Refine colours",
+					"desired": "2012-11-31",
+					"expected": "2012-11-27",
+					"commitment": true
+				}
+			]
+		}
+	</textarea>
+	<input type="button" name="updateButton" id="updateButton" value="Update"/>
   </div>
   <footer>
   </footer>
@@ -50,9 +106,6 @@
   <!-- Grab Google CDN's jQuery, with a protocol relative URL; fall back to local if offline -->
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
   <script>window.jQuery || document.write('<script src="js/libs/jquery-1.7.1.min.js"><\/script>')</script>
-  <script src="js/libs/jquery.event.drag-2.0.min.js"></script>
-  <script src="js/libs/slick.core.js"></script>
-  <script src="js/libs/slick.grid.js"></script>
   <script src="js/libs/processing-1.3.6.js"></script>
   <script src="js/libs/moment.js"></script>
   <script src="js/libs/underscore.js"></script>
