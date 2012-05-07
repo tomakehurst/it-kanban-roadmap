@@ -50,6 +50,7 @@ RoadMap.create = function(options) {
 			var FORECAST_CIRCLE_COLOUR = p.color(255, 155, 88);
 			var COMMITMENT_ARROW_COLOUR = p.color(43, 126, 93);
 			var FORECAST_ARROW_COLOUR = p.color(124, 66, 18);
+			var FORECAST_OFF_CHART_ARROW_COLOUR = p.color(226, 27, 21);
 			var BOX_FILL_COLOUR = p.color(194, 212, 174);
 			
 			var width = 1500;
@@ -200,27 +201,40 @@ RoadMap.create = function(options) {
 					//Desired -> expected arrow
 					if (initiative.desired !== initiative.expected) {
 						p.strokeWeight(3);
-						if (initiative.commitment) {
+						
+						var expectedIsOffChart = endDate.diff(moment(initiative.expected), 'days') < 0;
+						if (initiative.commitment && !expectedIsOffChart) {
 							p.stroke(COMMITMENT_ARROW_COLOUR);
 							p.fill(COMMITMENT_ARROW_COLOUR);
-						} else {
+						} else if (!initiative.commitment && !expectedIsOffChart) {
 							p.stroke(FORECAST_ARROW_COLOUR);
 							p.fill(FORECAST_ARROW_COLOUR);
+						} else {
+							p.stroke(FORECAST_OFF_CHART_ARROW_COLOUR);
+							p.fill(FORECAST_OFF_CHART_ARROW_COLOUR);
 						}
 						
 						var arrowStartX;
 						var arrowEndX;
-						if (moment(initiative.expected).diff(moment(initiative.desired), 'days') > 1) {
+						var expectedAfterDesired = moment(initiative.expected).diff(moment(initiative.desired), 'days') > 1;
+						if (expectedAfterDesired && !expectedIsOffChart) {
 							arrowStartX = boxX + boxSize;
 							arrowEndX = estimateCircleX + 2;
-						} else {
+						} else if (!expectedAfterDesired && !expectedIsOffChart) {
 							arrowStartX = estimateCircleX + circleSize + 5;
 							arrowEndX = boxX - 1;
-							
+						} else {
+							arrowStartX = boxX + boxSize;
+							arrowEndX = rightBound - 20;
 						}
 						
 						if (arrowEndX - arrowStartX > (boxSize / 4)) {
 							p.horizontalArrow(arrowStartX, boxY + half(boxSize), arrowEndX);
+						}
+						
+						if (expectedIsOffChart) {
+							p.textFont(p.loadFont('arial'), 14);
+							p.text('Forecast', arrowEndX - 80, boxY + 25);
 						}
 					}
 					
